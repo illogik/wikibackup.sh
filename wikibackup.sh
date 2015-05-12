@@ -8,19 +8,21 @@
 
 # setting variables
 
-wiki_dir=/cygdrive/e
+wkdir=/cygdrive/e/
 
-backup_dir=/cygdrive/d/backups/wiki
+bkdir=/cygdrive/d/backups/wiki/
 
+bk1="$bkdir"/"$( date '+%m.%d.%y' )"
 
 # test to see if there is a backup file for today and create if there isnt
 
-if [[ -f "$backup_dir"/"$( date '+%m.%d.%y' )" ]]; then
-    read -p "A backup file for today allready exists. Would you like to overwrite? (y/n) > " response1
+if [[ -d "$bkdir""$( date '+%m.%d.%y' )" ]]; then
+    read -p "A backup for today allready exists. Would you like to overwrite? (y/n) > " response1
         if [[ "$response1" != "y" ]]; then
             echo "Exiting"
             exit 1
         fi
-    else mkdir "$backup_dir"/"$( date '+%m.%d.%y' )"
+    else mkdir "$bkdir""$( date '+%m.%d.%y' )"
 fi
 
+rsync -arz "$wkdir" "$bk1"
