@@ -9,10 +9,9 @@
 # setting variables
 
 wkdir=/cygdrive/e/
-
 bkdir=/cygdrive/d/backups/wiki/
-
 bk1="$bkdir"/"$( date '+%m.%d.%y' )"
+test=
 
 # test to see if there is a backup file for today and create if there isnt
 
@@ -25,4 +24,15 @@ if [[ -d "$bkdir""$( date '+%m.%d.%y' )" ]]; then
     else mkdir "$bkdir""$( date '+%m.%d.%y' )"
 fi
 
+# rsync the files
+
 rsync -arz "$wkdir" "$bk1"
+
+# test that they copied correctly and give prompt
+
+if [[ $(diff -qr $wkdir $bk1) = "$test" ]]; then
+    echo "Files successfully backed up"
+else
+    echo "File did not successfully back up"
+    exit 1
+fi
