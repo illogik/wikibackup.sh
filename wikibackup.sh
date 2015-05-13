@@ -11,22 +11,15 @@
 wkdir=/cygdrive/e/
 bkdir=/cygdrive/d/backups/wiki/
 bk1="$bkdir"/"$( date '+%m.%d.%y' )"
-test=
 
-# test to see if there is a backup file for today and create if there isnt
+# test if the file is allready there. update with differences if it's there or create & rsync if not
 
 if [[ -d "$bkdir""$( date '+%m.%d.%y' )" ]]; then
-    read -p "A backup for today allready exists. Would you like to overwrite? (y/n) > " response1
-        if [[ "$response1" != "y" ]]; then
-            echo "Exiting"
-            exit 1
-        fi
-    else mkdir "$bkdir""$( date '+%m.%d.%y' )"
+    rsync --update -ra "$wkdir" "$bk1"
+else
+     mkdir "$bkdir""$( date '+%m.%d.%y' )"
+    rsync -ar "$wkdir" "$bk1"
 fi
-
-# rsync the files
-
-rsync -arz "$wkdir" "$bk1"
 
 # test that they copied correctly and give prompt
 
