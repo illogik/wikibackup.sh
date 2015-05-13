@@ -11,13 +11,20 @@
 wkdir=/cygdrive/e/
 bkdir=/cygdrive/d/backups/wiki/
 bk1="$bkdir"/"$( date '+%m.%d.%y' )"
+empty=
+
 
 # test if the file is allready there. update with differences if it's there or create & rsync if not
 
 if [[ -d "$bkdir""$( date '+%m.%d.%y' )" ]]; then
-    rsync --update -ra "$wkdir" "$bk1"
+    if [[ $(diff -qr $wkdir $bk1) = "$empty" ]]; then
+        echo "Backup is allready up to date"
+        exit 0
+    else
+        rsync --update -ra "$wkdir" "$bk1"
+    fi
 else
-     mkdir "$bkdir""$( date '+%m.%d.%y' )"
+    mkdir "$bkdir""$( date '+%m.%d.%y' )"
     rsync -ar "$wkdir" "$bk1"
 fi
 
@@ -27,5 +34,5 @@ if [[ $(diff -qr $wkdir $bk1) = "$test" ]]; then
     echo "Files successfully backed up"
 else
     echo "File did not successfully back up"
-    exit 1
+    exit 0
 fi
